@@ -1,0 +1,213 @@
+*cmp-ai.txt*                                            AI source for nvim-cmp
+
+==============================================================================
+Table of Contents                                   *cmp-ai-table-of-contents*
+
+1. cmp-ai                                                      |cmp-ai-cmp-ai|
+2. Install                                                    |cmp-ai-install|
+  - Dependencies                                 |cmp-ai-install-dependencies|
+  - Using a plugin manager             |cmp-ai-install-using-a-plugin-manager|
+3. Setup                                                        |cmp-ai-setup|
+  - max_lines                                         |cmp-ai-setup-max_lines|
+  - run_on_every_keystroke               |cmp-ai-setup-run_on_every_keystroke|
+  - ignored_file_types (table: <string:bool>)|cmp-ai-setup-ignored_file_types-(table:-<string:bool>)|
+4. Multi-Line suggestions                      |cmp-ai-multi-line-suggestions|
+5. Pretty Printing Menu Items              |cmp-ai-pretty-printing-menu-items|
+6. Sorting                                                    |cmp-ai-sorting|
+
+==============================================================================
+1. cmp-ai                                                      *cmp-ai-cmp-ai*
+
+AI source for hrsh7th/nvim-cmp <https://github.com/hrsh7th/nvim-cmp>
+
+This is a general purpose AI source for `cmp`, easily adapted to any
+restapisupporting remote code completion.
+
+For now, HuggingFace SantaCoder and OpenAI Chat are implemeted.
+
+
+==============================================================================
+2. Install                                                    *cmp-ai-install*
+
+
+DEPENDENCIES                                     *cmp-ai-install-dependencies*
+
+You will need `curl` and `plenary.nvim` to use this plugin.
+
+
+USING A PLUGIN MANAGER                 *cmp-ai-install-using-a-plugin-manager*
+
+Using Lazy <https://github.com/folke/lazy.nvim/>:`lua return
+require("lazy").setup({ {'tzachar/cmp-ai'}, {'hrsh7th/nvim-cmp', dependencies =
+{'tzachar/cmp-ai'}}, })`
+
+And later, tell `cmp` to use this plugin:
+
+>lua
+    require'cmp'.setup {
+     sources = {
+         { name = 'cmp_ai' },
+     },
+    }
+<
+
+
+==============================================================================
+3. Setup                                                        *cmp-ai-setup*
+
+Please note the use of `:` instead of a `.`
+
+To use HuggingFace:
+
+>lua
+    local cmp_ai = require('cmp_ai.config')
+    
+    cmp_ai:setup({
+        max_lines = 1000,
+        provider = 'HF',
+        run_on_every_keystroke = true,
+        ignored_file_types = {
+            -- default is not to ignore
+            -- uncomment to ignore in lua:
+            -- lua = true
+        },
+    })
+<
+
+You will also need to make sure you have the Hugging Face api key in
+youenvironment, `HF_API_KEY`.
+
+To use OpenAI:
+
+>lua
+    local cmp_ai = require('cmp_ai.config')
+    
+    cmp_ai:setup({
+        max_lines = 1000,
+        provider = 'OpenAI',
+        model = 'gpt-4',
+        run_on_every_keystroke = true,
+        ignored_file_types = {
+            -- default is not to ignore
+            -- uncomment to ignore in lua:
+            -- lua = true
+        },
+    })
+<
+
+You will also need to make sure you have the OpenAI api key in youenvironment,
+`OPENAI_API_KEY`.
+
+Available models for OpenAI are `gpt-4` and `gpt-3.5-turbo`.
+
+
+MAX_LINES                                             *cmp-ai-setup-max_lines*
+
+How many lines of buffer context to use
+
+
+RUN_ON_EVERY_KEYSTROKE                   *cmp-ai-setup-run_on_every_keystroke*
+
+Generate new completion items on every keystroke.
+
+
+IGNORED_FILE_TYPES (TABLE: <STRING:BOOL>)*cmp-ai-setup-ignored_file_types-(table:-<string:bool>)*
+
+Which file types to ignore. For example:
+
+>lua
+    ignored_file_types = {
+        html = true;
+    }
+<
+
+will make `cmp-ai` not offer completions when `vim.bo.filetype` is `html`.
+
+
+==============================================================================
+4. Multi-Line suggestions                      *cmp-ai-multi-line-suggestions*
+
+Most backends support multi line completions. However, you can choose
+betweenthe first line only, or the full completion including all lines. To
+enable this,each completion is duplicated such that the first line would appear
+as the firstoption, and the entire multi line completion would appear as the
+second option.Moreover, the multiline completion will also appear in the
+documentation window.
+
+
+==============================================================================
+5. Pretty Printing Menu Items              *cmp-ai-pretty-printing-menu-items*
+
+You can use the following to pretty print the completion menu (requireslspkind
+<https://github.com/onsails/lspkind-nvim> and patched
+fonts(https://www.nerdfonts.com)):
+
+>lua
+    local lspkind = require('lspkind')
+    
+    local source_mapping = {
+        buffer = "[Buffer]",
+        nvim_lsp = "[LSP]",
+        nvim_lua = "[Lua]",
+        cmp_ai = "[AI]",
+        path = "[Path]",
+    }
+    
+    require'cmp'.setup {
+        sources = {
+            { name = 'cmp_ai' },
+        },
+        formatting = {
+            format = function(entry, vim_item)
+                -- if you have lspkind installed, you can use it like
+                -- in the following line:
+                vim_item.kind = lspkind.symbolic(vim_item.kind, {mode = "symbol"})
+                vim_item.menu = source_mapping[entry.source.name]
+                if entry.source.name == "cmp_ai" then
+                    local detail = (entry.completion_item.labelDetails or {}).detail
+                    vim_item.kind = ""
+                    if detail and detail:find('.*%%.*') then
+                        vim_item.kind = vim_item.kind .. ' ' .. detail
+                    end
+    
+                    if (entry.completion_item.data or {}).multiline then
+                        vim_item.kind = vim_item.kind .. ' ' .. '[ML]'
+                    end
+                end
+                local maxwidth = 80
+                vim_item.abbr = string.sub(vim_item.abbr, 1, maxwidth)
+                return vim_item
+          end,
+        },
+    }
+<
+
+
+==============================================================================
+6. Sorting                                                    *cmp-ai-sorting*
+
+You can bump `cmp-ai` completions to the top of your completion menu like so:
+
+>lua
+    local compare = require('cmp.config.compare')
+    cmp.setup({
+      sorting = {
+        priority_weight = 2,
+        comparators = {
+          require('cmp_ai.compare'),
+          compare.offset,
+          compare.exact,
+          compare.score,
+          compare.recently_used,
+          compare.kind,
+          compare.sort_text,
+          compare.length,
+          compare.order,
+        },
+      },
+    })
+<
+
+Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
+
+vim:tw=78:ts=8:noet:ft=help:norl:
