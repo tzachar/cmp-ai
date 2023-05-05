@@ -58,7 +58,6 @@ Your answer should be:
       }
     }
   }
-  dump(data)
   data = vim.tbl_deep_extend('keep', data, self.params)
   self:Get(
     BASE_URL,
