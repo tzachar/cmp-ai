@@ -27,8 +27,8 @@ jobs:
       - name: panvimdoc
         uses: kdheepak/panvimdoc@v3.0.3
         with:
-          vimdoc: cmp-tabnine
-          description: TabNine source for nvim-cmp
+          vimdoc: cmp-ai
+          description: AI source for nvim-cmp
       - name: Apply stylua
         uses: JohnnyMorganz/stylua-action@v2.0.0
         with:
