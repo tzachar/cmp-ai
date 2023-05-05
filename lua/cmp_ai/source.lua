@@ -34,14 +34,10 @@ function Source:_do_complete(ctx, cb)
   table.insert(lines_after, 1, cur_line_after)
   local after = table.concat(lines_after, '\n')
 
-  local service = conf:get("provider")
-  service:complete(
-    before,
-    after,
-    function(data)
-      self:end_complete(data, ctx, cb)
-    end
-  )
+  local service = conf:get('provider')
+  service:complete(before, after, function(data)
+    self:end_complete(data, ctx, cb)
+  end)
 end
 
 --- complete
@@ -66,7 +62,7 @@ function Source:end_complete(data, ctx, cb)
       documentation = {
         kind = cmp.lsp.MarkupKind.Markdown,
         value = '```' .. (vim.filetype.match({ buf = 0 }) or '') .. '\n' .. result .. '\n```',
-      }
+      },
     })
   end
   cb({

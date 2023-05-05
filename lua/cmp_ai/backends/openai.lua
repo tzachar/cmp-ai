@@ -1,37 +1,29 @@
-local requests = require("cmp_ai.requests")
+local requests = require('cmp_ai.requests')
 
 OpenAI = requests:new(nil)
-BASE_URL = "https://api.openai.com/v1/chat/completions"
+BASE_URL = 'https://api.openai.com/v1/chat/completions'
 
 function OpenAI:new(o, params)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
-  self.params = vim.tbl_deep_extend(
-    'keep',
-    params or {},
-    {
-      model = 'gpt-3.5-turbo',
-      temperature = 0.1,
-      n = 1,
-    }
-  )
+  self.params = vim.tbl_deep_extend('keep', params or {}, {
+    model = 'gpt-3.5-turbo',
+    temperature = 0.1,
+    n = 1,
+  })
 
-  self.api_key = os.getenv("OPENAI_API_KEY")
+  self.api_key = os.getenv('OPENAI_API_KEY')
   if not self.api_key then
-    error("OPENAI_API_KEY environment variable not set")
+    error('OPENAI_API_KEY environment variable not set')
   end
   self.headers = {
-    "Authorization: Bearer " .. self.api_key
+    'Authorization: Bearer ' .. self.api_key,
   }
   return o
 end
 
-
-function OpenAI:complete(
-  lines_before,
-  lines_after,
-  cb)
+function OpenAI:complete(lines_before, lines_after, cb)
   local data = {
     messages = {
       {
@@ -49,43 +41,32 @@ For example, consider the following request:
 Your answer should be:
 
     print("Hello")<end_code_middle>
-]=]
+]=],
       },
       {
         role = 'user',
-        content = '<begin_code_prefix>' .. lines_before .. '<end_code_prefix>' ..
-          '<begin_code_suffix>' .. lines_after .. '<end_code_suffix><begin_code_middle>'
-      }
-    }
+        content = '<begin_code_prefix>' .. lines_before .. '<end_code_prefix>' .. '<begin_code_suffix>' .. lines_after .. '<end_code_suffix><begin_code_middle>',
+      },
+    },
   }
   data = vim.tbl_deep_extend('keep', data, self.params)
-  self:Get(
-    BASE_URL,
-    self.headers,
-    data,
-    function(answer)
-      local new_data = {}
-      if answer.choices then
-        for _, response in ipairs(answer.choices) do
-          local entry = response.message.content:gsub('<end_code_middle>', '')
-          entry = entry:gsub('```', '')
-          table.insert(new_data, entry)
-        end
+  self:Get(BASE_URL, self.headers, data, function(answer)
+    local new_data = {}
+    if answer.choices then
+      for _, response in ipairs(answer.choices) do
+        local entry = response.message.content:gsub('<end_code_middle>', '')
+        entry = entry:gsub('```', '')
+        table.insert(new_data, entry)
       end
-      cb(new_data)
     end
-  )
+    cb(new_data)
+  end)
 end
 
-
 function OpenAI:test()
-  self:complete(
-    'def factorial(n)\n    if',
-    '    return ans\n',
-    function(data)
-      dump(data)
-    end
-  )
+  self:complete('def factorial(n)\n    if', '    return ans\n', function(data)
+    dump(data)
+  end)
 end
 
 return OpenAI
