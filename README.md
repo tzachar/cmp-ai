@@ -17,7 +17,7 @@ You will need `curl` and `plenary.nvim` to use this plugin.
 Using [Lazy](https://github.com/folke/lazy.nvim/):
    ```lua
 return require("lazy").setup({
-    {'tzachar/cmp-ai'},
+    {'tzachar/cmp-ai', dependencies = 'nvim-lua/plenary.nvim'},
     {'hrsh7th/nvim-cmp', dependencies = {'tzachar/cmp-ai'}},
 })
    ```
