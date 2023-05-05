@@ -101,3 +101,74 @@ the first line only, or the full completion including all lines. To enable this,
 each completion is duplicated such that the first line would appear as the first
 option, and the entire multi line completion would appear as the second option.
 Moreover, the multiline completion will also appear in the documentation window.
+
+# Pretty Printing Menu Items
+
+You can use the following to pretty print the completion menu (requires
+[lspkind](https://github.com/onsails/lspkind-nvim) and patched fonts
+(https://www.nerdfonts.com)):
+
+```lua
+local lspkind = require('lspkind')
+
+local source_mapping = {
+	buffer = "[Buffer]",
+	nvim_lsp = "[LSP]",
+	nvim_lua = "[Lua]",
+	cmp_ai = "[AI]",
+	path = "[Path]",
+}
+
+require'cmp'.setup {
+	sources = {
+		{ name = 'cmp_ai' },
+	},
+	formatting = {
+		format = function(entry, vim_item)
+			-- if you have lspkind installed, you can use it like
+			-- in the following line:
+	 		vim_item.kind = lspkind.symbolic(vim_item.kind, {mode = "symbol"})
+	 		vim_item.menu = source_mapping[entry.source.name]
+	 		if entry.source.name == "cmp_ai" then
+                local detail = (entry.completion_item.labelDetails or {}).detail
+	 			vim_item.kind = ""
+	 			if detail and detail:find('.*%%.*') then
+	 				vim_item.kind = vim_item.kind .. ' ' .. detail
+	 			end
+
+	 			if (entry.completion_item.data or {}).multiline then
+	 				vim_item.kind = vim_item.kind .. ' ' .. '[ML]'
+	 			end
+	 		end
+	 		local maxwidth = 80
+	 		vim_item.abbr = string.sub(vim_item.abbr, 1, maxwidth)
+	 		return vim_item
+	  end,
+	},
+}
+```
+
+# Sorting
+
+You can bump `cmp-ai` completions to the top of your completion menu like so:
+
+
+```lua
+local compare = require('cmp.config.compare')
+cmp.setup({
+  sorting = {
+    priority_weight = 2,
+    comparators = {
+      require('cmp_ai.compare'),
+      compare.offset,
+      compare.exact,
+      compare.score,
+      compare.recently_used,
+      compare.kind,
+      compare.sort_text,
+      compare.length,
+      compare.order,
+    },
+  },
+})
+```
