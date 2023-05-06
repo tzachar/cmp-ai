@@ -11,9 +11,10 @@ Table of Contents                                   *cmp-ai-table-of-contents*
   - max_lines                                         |cmp-ai-setup-max_lines|
   - run_on_every_keystroke               |cmp-ai-setup-run_on_every_keystroke|
   - ignored_file_types (table: <string:bool>)|cmp-ai-setup-ignored_file_types-(table:-<string:bool>)|
-4. Multi-Line suggestions                      |cmp-ai-multi-line-suggestions|
-5. Pretty Printing Menu Items              |cmp-ai-pretty-printing-menu-items|
-6. Sorting                                                    |cmp-ai-sorting|
+4. Dedicated cmp keybindings                |cmp-ai-dedicated-cmp-keybindings|
+5. Multi-Line suggestions                      |cmp-ai-multi-line-suggestions|
+6. Pretty Printing Menu Items              |cmp-ai-pretty-printing-menu-items|
+7. Sorting                                                    |cmp-ai-sorting|
 
 ==============================================================================
 1. cmp-ai                                                      *cmp-ai-cmp-ai*
@@ -126,7 +127,37 @@ will make `cmp-ai` not offer completions when `vim.bo.filetype` is `html`.
 
 
 ==============================================================================
-4. Multi-Line suggestions                      *cmp-ai-multi-line-suggestions*
+4. Dedicated cmp keybindings                *cmp-ai-dedicated-cmp-keybindings*
+
+As completions can take time, and you might not want to trigger expensive
+apison every keystroke, you can configure `cmp-ai` to trigger only with a
+specifickey press. For example, to bind `cmp-ai` to `<c-x>`, you can do the
+following:
+
+>lua
+    cmp.setup({
+       ...
+       mapping = {
+           ...
+          ['<C-x>'] = cmp.mapping(
+            cmp.mapping.complete({
+              config = {
+                sources = cmp.config.sources({
+                    {name = 'cmp_ai', }
+                })
+              }
+            }),
+            { 'i' }
+          ),
+       }
+    })
+<
+
+Also, make sure you do not pass `cmp-ai` to the default list of `cmp` sources.
+
+
+==============================================================================
+5. Multi-Line suggestions                      *cmp-ai-multi-line-suggestions*
 
 Most backends support multi line completions. However, you can choose
 betweenthe first line only, or the full completion including all lines. To
@@ -137,7 +168,7 @@ documentation window.
 
 
 ==============================================================================
-5. Pretty Printing Menu Items              *cmp-ai-pretty-printing-menu-items*
+6. Pretty Printing Menu Items              *cmp-ai-pretty-printing-menu-items*
 
 You can use the following to pretty print the completion menu (requireslspkind
 <https://github.com/onsails/lspkind-nvim> and patched
@@ -185,7 +216,7 @@ fonts(https://www.nerdfonts.com)):
 
 
 ==============================================================================
-6. Sorting                                                    *cmp-ai-sorting*
+7. Sorting                                                    *cmp-ai-sorting*
 
 You can bump `cmp-ai` completions to the top of your completion menu like so:
 
