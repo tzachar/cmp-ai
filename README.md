@@ -94,6 +94,33 @@ ignored_file_types = {
 ```
 will make `cmp-ai` not offer completions when `vim.bo.filetype` is `html`.
 
+# Dedicated `cmp` keybindings
+
+As completions can take time, and you might not want to trigger expensive apis
+on every keystroke, you can configure `cmp-ai` to trigger only with a specific
+key press. For example, to bind `cmp-ai` to `<c-x>`, you can do the following:
+
+```lua
+cmp.setup({
+   ...
+   mapping = {
+       ...
+      ['<C-x>'] = cmp.mapping(
+        cmp.mapping.complete({
+          config = {
+            sources = cmp.config.sources({
+                {name = 'cmp_ai', }
+            })
+          }
+        }),
+        { 'i' }
+      ),
+   }
+})
+```
+
+Also, make sure you do not pass `cmp-ai` to the default list of `cmp` sources.
+
 # Multi-Line suggestions
 
 Most backends support multi line completions. However, you can choose between
