@@ -8,6 +8,7 @@ Table of Contents                                   *cmp-ai-table-of-contents*
   - Dependencies                                 |cmp-ai-install-dependencies|
   - Using a plugin manager             |cmp-ai-install-using-a-plugin-manager|
 3. Setup                                                        |cmp-ai-setup|
+  - notify                                               |cmp-ai-setup-notify|
   - max_lines                                         |cmp-ai-setup-max_lines|
   - run_on_every_keystroke               |cmp-ai-setup-run_on_every_keystroke|
   - ignored_file_types (table: <string:bool>)|cmp-ai-setup-ignored_file_types-(table:-<string:bool>)|
@@ -88,6 +89,7 @@ To use OpenAI:
         max_lines = 1000,
         provider = 'OpenAI',
         model = 'gpt-4',
+        notify = true,
         run_on_every_keystroke = true,
         ignored_file_types = {
             -- default is not to ignore
@@ -101,6 +103,12 @@ You will also need to make sure you have the OpenAI api key in youenvironment,
 `OPENAI_API_KEY`.
 
 Available models for OpenAI are `gpt-4` and `gpt-3.5-turbo`.
+
+
+NOTIFY                                                   *cmp-ai-setup-notify*
+
+As some completion sources can be quit slow, setting this to `true` will
+trigger anotification when a completion starts and ends using `vim.notify`.
 
 
 MAX_LINES                                             *cmp-ai-setup-max_lines*
