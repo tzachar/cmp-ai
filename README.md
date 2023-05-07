@@ -64,6 +64,7 @@ cmp_ai:setup({
 	max_lines = 1000,
     provider = 'OpenAI',
     model = 'gpt-4',
+    notify = true,
 	run_on_every_keystroke = true,
 	ignored_file_types = {
 		-- default is not to ignore
@@ -76,6 +77,10 @@ You will also need to make sure you have the OpenAI api key in you
 environment, `OPENAI_API_KEY`.
 
 Available models for OpenAI are `gpt-4` and `gpt-3.5-turbo`.
+
+## `notify`
+As some completion sources can be quit slow, setting this to `true` will trigger a
+notification when a completion starts and ends using `vim.notify`.
 
 ## `max_lines`
 
