@@ -34,7 +34,7 @@ function HF:complete(lines_before, lines_after, cb)
   self:Get(BASE_URL, self.headers, data, function(answer)
     local new_data = {}
     if answer.error ~= nil then
-        vim.notify('HuggingFace error: ' .. answer.error)
+      vim.notify('HuggingFace error: ' .. answer.error)
       return
     end
     for _, response in ipairs(answer) do
