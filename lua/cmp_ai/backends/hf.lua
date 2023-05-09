@@ -25,13 +25,21 @@ function HF:complete(lines_before, lines_after, cb)
     parameters = {
       num_return_sequences = 5,
       return_full_text = false,
+      max_new_tokens = 160,
+      temperature = 0.2,
+      top_p = 0.95,
+      stop = { '<|endoftext|>', '<fim-' },
     },
   }
   self:Get(BASE_URL, self.headers, data, function(answer)
     local new_data = {}
+    if answer.error ~= nil then
+        vim.notify('HuggingFace error: ' .. answer.error)
+      return
+    end
     for _, response in ipairs(answer) do
-      if response.error == nil then
-        local result = response.generated_text:gsub('<|endoftext|', '')
+      if response.generated_text == nil then
+        local result = response.generated_text:gsub('<|endoftext|>', '')
         table.insert(new_data, result)
       end
     end
