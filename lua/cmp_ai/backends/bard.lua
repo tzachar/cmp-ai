@@ -47,7 +47,7 @@ function Bard:complete(lines_before, lines_after, cb)
     'import json',
     'import os',
     'os.environ["_BARD_API_KEY"] = "' .. self.api_key .. '"',
-    'print(json.dumps(Bard(timeout=10).get_answer("""' .. message .. '""")))'
+    'print(json.dumps(Bard(timeout=10).get_answer("""' .. message .. '""")))',
   }, '\n')
   local tmpfname = os.tmpname()
   local f = io.open(tmpfname, 'w+')
@@ -81,10 +81,11 @@ function Bard:complete(lines_before, lines_after, cb)
               table.insert(new_data, entry)
             end
           end
-        cb(new_data)
+          cb(new_data)
         end
-      end)
-    }):start()
+      end),
+    })
+    :start()
 end
 
 function Bard:test()
