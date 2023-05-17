@@ -16,7 +16,7 @@ function Service:complete(
   error('Not Implemented!')
 end
 
-local function json_decode(data)
+function Service:json_decode(data)
   local status, result = pcall(vim.fn.json_decode, data)
   if status then
     return result
@@ -56,7 +56,7 @@ function Service:Get(url, headers, data, cb)
         end
 
         local result = table.concat(response:result(), '\n')
-        local json = json_decode(result)
+        local json = self:json_decode(result)
         if json == nil then
           cb({ { error = 'No Response.' } })
         else

@@ -4,13 +4,15 @@ AI source for [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
 This is a general purpose AI source for `cmp`, easily adapted to any restapi
 supporting remote code completion.
 
-For now, HuggingFace SantaCoder and OpenAI Chat are implemeted.
+For now, HuggingFace SantaCoder, OpenAI Chat and Google Bard are implemeted.
 
 # Install
 
 ## Dependencies
 
-You will need `curl` and `plenary.nvim` to use this plugin.
+- You will need `plenary.nvim` to use this plugin.
+- For using OpenAI or HuggingFace, you will also need `curl`.
+- For using Google Bard, you will need (dsdanielpark/Bard-API)[https://github.com/dsdanielpark/Bard-API].
 
 ## Using a plugin manager
 
@@ -24,14 +26,13 @@ return require("lazy").setup({
 
 And later, tell `cmp` to use this plugin:
 
-   ```lua
+```lua
 require'cmp'.setup {
 	sources = {
 		{ name = 'cmp_ai' },
 	},
 }
-   ```
-
+```
 # Setup
 
 Please note the use of `:` instead of a `.`
@@ -77,6 +78,27 @@ You will also need to make sure you have the OpenAI api key in you
 environment, `OPENAI_API_KEY`.
 
 Available models for OpenAI are `gpt-4` and `gpt-3.5-turbo`.
+
+To use Google Bard:
+
+```lua
+local cmp_ai = require('cmp_ai.config')
+
+cmp_ai:setup({
+	max_lines = 1000,
+    provider = 'Bard',
+    notify = true,
+	run_on_every_keystroke = true,
+	ignored_file_types = {
+		-- default is not to ignore
+		-- uncomment to ignore in lua:
+		-- lua = true
+	},
+})
+```
+You will also need to follow the instructions on (dsdanielpark/Bard-API)[https://github.com/dsdanielpark/Bard-API]
+to get the `__Secure-1PSID` key, and set the environment variable `BARD_API_KEY`
+accordingly (note that this plugin expects `BARD_API_KEY` without a leading underscore).
 
 ## `notify`
 As some completion sources can be quit slow, setting this to `true` will trigger a
@@ -125,14 +147,6 @@ cmp.setup({
 ```
 
 Also, make sure you do not pass `cmp-ai` to the default list of `cmp` sources.
-
-# Multi-Line suggestions
-
-Most backends support multi line completions. However, you can choose between
-the first line only, or the full completion including all lines. To enable this,
-each completion is duplicated such that the first line would appear as the first
-option, and the entire multi line completion would appear as the second option.
-Moreover, the multiline completion will also appear in the documentation window.
 
 # Pretty Printing Menu Items
 

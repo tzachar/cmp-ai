@@ -61,9 +61,6 @@ function Source:end_complete(data, ctx, cb)
     local prefix = string.sub(ctx.context.cursor_before_line, ctx.offset)
     local result = prefix .. response
     table.insert(items, {
-      label = result:gsub('\n.*', ''),
-    })
-    table.insert(items, {
       label = result,
       documentation = {
         kind = cmp.lsp.MarkupKind.Markdown,
