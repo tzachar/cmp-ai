@@ -15,7 +15,9 @@ function OpenAI:new(o, params)
 
   self.api_key = os.getenv('OPENAI_API_KEY')
   if not self.api_key then
-    error('OPENAI_API_KEY environment variable not set')
+    vim.schedule(function()
+      vim.notify('OPENAI_API_KEY environment variable not set', vim.log.levels.ERROR)
+    end)
   end
   self.headers = {
     'Authorization: Bearer ' .. self.api_key,
@@ -24,6 +26,12 @@ function OpenAI:new(o, params)
 end
 
 function OpenAI:complete(lines_before, lines_after, cb)
+  if not self.api_key then
+    vim.schedule(function()
+      vim.notify('OPENAI_API_KEY environment variable not set', vim.log.levels.ERROR)
+    end)
+    return
+  end
   local data = {
     messages = {
       {

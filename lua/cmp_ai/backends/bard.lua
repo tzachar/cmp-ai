@@ -13,12 +13,20 @@ function Bard:new(o, params)
 
   self.api_key = os.getenv('BARD_API_KEY')
   if not self.api_key then
-    error('BARD_API_KEY environment variable not set')
+    vim.schedule(function()
+      vim.notify('BARD_API_KEY environment variable not set', vim.log.levels.ERROR)
+    end)
   end
   return o
 end
 
 function Bard:complete(lines_before, lines_after, cb)
+  if not self.api_key then
+    vim.schedule(function()
+      vim.notify('BARD_API_KEY environment variable not set', vim.log.levels.ERROR)
+    end)
+    return
+  end
   local message = table.concat({
     'You are a coding companion.',
     ' You need to suggest code completions for the language ',
