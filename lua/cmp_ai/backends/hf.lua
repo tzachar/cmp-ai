@@ -14,6 +14,7 @@ function HF:new(o, params)
     vim.schedule(function()
       vim.notify('HF_API_KEY environment variable not set', vim.log.levels.ERROR)
     end)
+    self.api_key = 'NO_KEY'
   end
   self.headers = {
     'Authorization: Bearer ' .. self.api_key,

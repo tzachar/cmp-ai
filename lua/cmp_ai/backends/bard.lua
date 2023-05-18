@@ -16,6 +16,7 @@ function Bard:new(o, params)
     vim.schedule(function()
       vim.notify('BARD_API_KEY environment variable not set', vim.log.levels.ERROR)
     end)
+    self.api_key = 'NO_KEY'
   end
   return o
 end
