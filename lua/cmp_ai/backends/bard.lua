@@ -68,7 +68,7 @@ function Bard:complete(lines_before, lines_after, cb)
   f:close()
   job
     :new({
-      command = '/home/tzachar/.pyenv/shims/python',
+      command = 'python3',
       args = { tmpfname },
       on_exit = vim.schedule_wrap(function(response, exit_code)
         os.remove(tmpfname)
