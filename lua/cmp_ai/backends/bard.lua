@@ -75,11 +75,11 @@ function Bard:complete(lines_before, lines_after, cb)
         local result = table.concat(response:result(), '\n')
         if exit_code ~= 0 then
           vim.notify('An Error Occurred: ' .. result, vim.log.levels.ERROR)
-          cb({ { error = 'ERROR: API Error' } })
+          cb({})
         end
         local json = self:json_decode(result)
         local new_data = {}
-        if json ~= nil then
+        if json ~= nil and json.choices ~= nil then
           for _, choice in ipairs(json.choices) do
             if #choice.content > 0 then
               local entry = table.concat(choice.content, '\n'):gsub('<end_code_middle>', '')
