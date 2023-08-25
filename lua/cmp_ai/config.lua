@@ -5,7 +5,11 @@ local conf = {
   run_on_every_keystroke = true,
   provider = 'HF',
   notify = true,
-  ignored_file_types = { -- default is not to ignore
+  notify_callback = function(msg)
+    vim.notify(msg)
+  end,
+  ignored_file_types = {
+    -- default is not to ignore
     -- uncomment to ignore in lua:
     -- lua = true
   },
