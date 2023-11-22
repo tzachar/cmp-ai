@@ -4,6 +4,7 @@ local conf = {
   max_lines = 50,
   run_on_every_keystroke = true,
   provider = 'HF',
+  provider_options = {},
   notify = true,
   notify_callback = function(msg)
     vim.notify(msg)
@@ -21,7 +22,7 @@ function M:setup(params)
   end
   local status, provider = pcall(require, 'cmp_ai.backends.' .. conf.provider:lower())
   if status then
-    conf.provider = provider:new(params)
+    conf.provider = provider:new(conf.provider_options)
   else
     vim.notify('Bad provider in config: ' .. conf.provider, vim.log.levels.ERROR)
   end

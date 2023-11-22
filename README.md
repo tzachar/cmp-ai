@@ -72,7 +72,9 @@ local cmp_ai = require('cmp_ai.config')
 cmp_ai:setup({
   max_lines = 1000,
   provider = 'OpenAI',
-  model = 'gpt-4',
+  provider_options = {
+    model = 'gpt-4',
+  },
   notify = true,
   notify_callback = function(msg)
     vim.notify(msg)
@@ -115,6 +117,30 @@ cmp_ai:setup({
 You will also need to follow the instructions on [dsdanielpark/Bard-API](https://github.com/dsdanielpark/Bard-API)
 to get the `__Secure-1PSID` key, and set the environment variable `BARD_API_KEY`
 accordingly (note that this plugin expects `BARD_API_KEY` without a leading underscore).
+
+To use [Ollama](https://ollama.ai):
+
+```lua
+local cmp_ai = require('cmp_ai.config')
+
+cmp_ai:setup({
+  max_lines = 100,
+  provider = 'Ollama',
+  provider_options = {
+    model = 'codellama:7b-code',
+  },
+  notify = true,
+  notify_callback = function(msg)
+    vim.notify(msg)
+  end,
+  run_on_every_keystroke = true,
+  ignored_file_types = {
+    -- default is not to ignore
+    -- uncomment to ignore in lua:
+    -- lua = true
+  },
+})
+```
 
 ### `notify`
 
