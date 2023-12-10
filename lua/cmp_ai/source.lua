@@ -40,11 +40,50 @@ function Source:_do_complete(ctx, cb)
   local service = conf:get('provider')
   service:complete(before, after, function(data)
     self:end_complete(data, ctx, cb)
-    if conf:get('notify') then
-      conf:get('notify_callback')('Completion started')
-    end
+    -- why 2x ?
+    -- if conf:get('notify') then
+    --   conf:get('notify_callback')('Completion started')
+    -- end
   end)
 end
+
+function Source:trigger(ctx, callback)
+  if vim.fn.mode() == 'i' then
+    self:_do_complete(ctx, callback)
+  end
+end
+
+-- based on https://github.com/runiq/neovim-throttle-debounce/blob/main/lua/throttle-debounce/init.lua (MIT)
+local function debounce_trailing(fn, ms)
+	local timer = vim.loop.new_timer()
+	local wrapped_fn
+
+    function wrapped_fn(...)
+      local argv = {...}
+      local argc = select('#', ...)
+      -- timer:stop() -- seems not needed?
+      timer:start(ms, 0, function()
+        pcall(vim.schedule_wrap(fn), unpack(argv, 1, argc))
+      end)
+    end
+	return wrapped_fn, timer
+end
+
+local bounce_time = 700 -- in ms
+local bounced_complete, ret_tim =  debounce_trailing(
+  Source.trigger,
+  bounce_time)
+
+
+-- on keypress event autocommand -  call tim.timer_again
+local au_bound = vim.api.nvim_create_augroup("BounceCompletion", { clear = true })
+vim.api.nvim_create_autocmd("TextChangedI",{
+  pattern = "*",
+  callback = function()
+    vim.loop.timer_again(ret_tim)
+  end,
+  group = au_bound
+})
 
 --- complete
 function Source:complete(ctx, callback)
@@ -52,7 +91,9 @@ function Source:complete(ctx, callback)
     callback()
     return
   end
-  self:_do_complete(ctx, callback)
+  -- local bufnr = vim.api.nvim_get_current_buf()
+  bounced_complete(self, ctx, callback)
+
 end
 
 function Source:end_complete(data, ctx, cb)
