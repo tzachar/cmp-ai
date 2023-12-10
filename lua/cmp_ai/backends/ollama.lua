@@ -8,7 +8,8 @@ function Ollama:new(o, params)
   self.__index = self
   self.params = vim.tbl_deep_extend('keep', params or {}, {
     base_url = 'http://127.0.0.1:11434/api/generate',
-    model = 'codellama:7b-code',
+    -- model = 'codellama:7b-code',
+    model = 'deepseek-coder:1.3b-base-q5_0',
     options = {
       temperature = 0.2,
     },
@@ -20,7 +21,8 @@ end
 function Ollama:complete(lines_before, lines_after, cb)
   local data = {
     model = self.params.model,
-    prompt = '<PRE> ' .. lines_before .. ' <SUF>' .. lines_after .. ' <MID>',
+    -- prompt = '<PRE> ' .. lines_before .. ' <SUF>' .. lines_after .. ' <MID>', -- for codellama
+    prompt = "<s><｜fim▁begin｜>" .. lines_before .. "<｜fim▁hole｜>" .. lines_after .. "<｜fim▁end｜>", -- for deepseek coder
     stream = false,
     options = self.params.options,
   }
