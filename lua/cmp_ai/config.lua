@@ -5,6 +5,7 @@ local conf = {
   run_on_every_keystroke = true,
   provider = 'HF',
   provider_options = {},
+  debounce_delay = 200, -- ms
   notify = true,
   notify_callback = function(msg)
     vim.notify(msg)

@@ -6,15 +6,13 @@ function Ollama:new(o, params)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
-  self.params = vim.tbl_deep_extend('keep', params or {}, {
+  self.params = vim.tbl_deep_extend('keep', o or {}, {
     base_url = 'http://127.0.0.1:11434/api/generate',
-    -- model = 'codellama:7b-code',
-    model = 'deepseek-coder:1.3b-base-q5_0',
+    model = 'codellama:7b-code',
     options = {
       temperature = 0.2,
     },
   })
-
   return o
 end
 

@@ -69,10 +69,10 @@ local function debounce_trailing(fn, ms)
 	return wrapped_fn, timer
 end
 
-local bounce_time = 700 -- in ms
 local bounced_complete, ret_tim =  debounce_trailing(
   Source.trigger,
-  bounce_time)
+  conf:get('debounce_delay')
+)
 
 
 -- on keypress event autocommand -  call tim.timer_again
