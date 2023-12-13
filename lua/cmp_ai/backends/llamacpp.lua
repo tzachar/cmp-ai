@@ -27,14 +27,14 @@ function LlamaCpp:complete(lines_before, lines_after, cb)
 
   self:Get(self.params.base_url, {}, data, function(answer)
     local new_data = {}
-    vim.print('answer', answer)
+    -- vim.print('answer', answer)
     if answer.error ~= nil then
       vim.notify('Llamacp error: ' .. answer.error)
       return
     end
     if answer.stop then
       local result = answer.content:gsub('<EOT>', '')
-      vim.print('results', result)
+      -- vim.print('results', result)
       table.insert(new_data, result)
     end
     cb(new_data)
