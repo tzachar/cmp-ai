@@ -24,6 +24,7 @@ function LlamaCpp:complete(lines_before, lines_after, cb)
     stream = false,
   }
   data = vim.tbl_extend('keep', data, self.params.options)
+  data.prompt = self.params.prompt(lines_before, lines_after)
 
   self:Get(self.params.base_url, {}, data, function(answer)
     local new_data = {}
