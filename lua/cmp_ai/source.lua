@@ -77,7 +77,7 @@ local bounced_complete, ret_tim =  debounce_trailing(
 
 -- on keypress event autocommand -  call tim.timer_again
 local bounce_autogroup = vim.api.nvim_create_augroup("BounceCompletion", { clear = true })
-vim.api.nvim_create_autocmd("TextChangedI",{
+vim.api.nvim_create_autocmd({"TextChangedI","InsertEnter","TextChangedP"},{
   pattern = "*",
   callback = function()
     vim.loop.timer_again(ret_tim)
