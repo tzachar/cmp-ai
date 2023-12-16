@@ -69,18 +69,20 @@ local function debounce_trailing(fn, ms)
 	return wrapped_fn, timer
 end
 
-local bounced_complete, ret_tim =  debounce_trailing(
+local bounce_complete, ret_tim =  debounce_trailing(
   Source.trigger,
   conf:get('debounce_delay')
 )
 
-
+local self_cp, ctx_cp, call_cp
 -- on keypress event autocommand -  call tim.timer_again
 local bounce_autogroup = vim.api.nvim_create_augroup("BounceCompletion", { clear = true })
 vim.api.nvim_create_autocmd({"TextChangedI","InsertEnter","TextChangedP"},{
   pattern = "*",
   callback = function()
-    vim.loop.timer_again(ret_tim)
+    if self_cp ~= nil then
+      bounce_complete(self_cp, ctx_cp, call_cp)
+    end
   end,
   group = bounce_autogroup
 })
@@ -88,7 +90,7 @@ vim.api.nvim_create_autocmd({"TextChangedI","InsertEnter","TextChangedP"},{
 vim.api.nvim_create_autocmd({"InsertLeave"},{
   pattern = "*",
   callback = function()
-    vim.loop.timer_stop(ret_tim)
+    ret_tim:stop()
   end,
  group = bounce_autogroup
 })
@@ -97,12 +99,12 @@ vim.api.nvim_create_autocmd({"InsertLeave"},{
 --- complete
 function Source:complete(ctx, callback)
   if conf:get('ignored_file_types')[vim.bo.filetype] then
-    callback()
+    -- callback() -- ? forwhat
     return
   end
   -- local bufnr = vim.api.nvim_get_current_buf()
-  bounced_complete(self, ctx, callback)
-
+  self_cp, ctx_cp, call_cp = self, ctx, callback
+  bounce_complete(self_cp, ctx, callback)
 end
 
 function Source:end_complete(data, ctx, cb)
