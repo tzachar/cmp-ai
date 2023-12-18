@@ -146,7 +146,7 @@ cmp_ai:setup({
   },
 })
 ```
-Models for Ollama are available at [here][(https://ollama.ai/library). For code completions use model that supports it - e.g. [DeepSeek Base 6.7b](https://ollama.ai/library/deepseek-coder)
+Models for Ollama are available at [here](https://ollama.ai/library). For code completions use model that supports it - e.g. [DeepSeek Base 6.7b](https://ollama.ai/library/deepseek-coder)
 
 To use with [LlamaCpp](https://github.com/ggerganov/llama.cpp):
 
