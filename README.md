@@ -145,18 +145,10 @@ cmp_ai:setup({
     -- lua = true
   },
 })
+```
 Models for Ollama are available at [here][(https://ollama.ai/library). For code completions use model that supports it - e.g. [DeepSeek Base 6.7b](https://ollama.ai/library/deepseek-coder)
-```
 
-To use with [LlamaCpp](https://github.com/ggerganov/llama.cpp).
-For now it requires you to run [Llama Server](https://github.com/ggerganov/llama.cpp/blob/master/examples/server/README.md) manually with:
-
-```bash
-./server -m ./models/deepseek-coder-6.7b-base.Q4_K_M.gguf -ngl 50 -c 2048 --log-disable
-```
-LlamaCpp requires you to download model in GGUP format. Here is the current model I use:
- - [DeepSeek Base 6.7b](https://huggingface.co/TheBloke/deepseek-coder-6.7B-base-GGUF/blob/main/deepseek-coder-6.7b-base.Q4_K_M.gguf)
- It is good to have at least 12GB of VRAM to run it (works best with NVIDIA - due to CUDA acceleration).
+To use with [LlamaCpp](https://github.com/ggerganov/llama.cpp):
 
 ```lua
 local cmp_ai = require('cmp_ai.config')
@@ -190,6 +182,18 @@ cmp_ai:setup {
   },
 }
 ```
+
+
+[LlamaCpp Server](https://github.com/ggerganov/llama.cpp/blob/master/examples/server/README.md) has to be started manually with:
+
+```bash
+./server -m ./models/deepseek-coder-6.7b-base.Q4_K_M.gguf -ngl 50 -c 2048 --log-disable
+```
+
+LlamaCpp requires model in GGUP format. Here is the current model I use for coding:
+ - [DeepSeek Base 6.7b](https://huggingface.co/TheBloke/deepseek-coder-6.7B-base-GGUF/blob/main/deepseek-coder-6.7b-base.Q4_K_M.gguf)
+ It is good to have at least 12GB of VRAM to run it (works best with NVIDIA - due to CUDA acceleration). If you want you can grab smaller models too (faster to run, but lower quality of completions)
+
 
 ### `notify`
 
