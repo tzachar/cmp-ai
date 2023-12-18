@@ -128,7 +128,12 @@ cmp_ai:setup({
   provider = 'Ollama',
   provider_options = {
     model = 'codellama:7b-code',
+    prompt = function(lines_before, lines_after)
+      -- prompt depends on the model you use. Here is an example for deepseek coder
+      return prompt = '<PRE> ' .. lines_before .. ' <SUF>' .. lines_after .. ' <MID>', -- for codellama
+    end,
   },
+  debounce_delay = 600, -- ms llama may be GPU hungry, wait x ms after last key input, before sending request to it
   notify = true,
   notify_callback = function(msg)
     vim.notify(msg)
@@ -140,6 +145,49 @@ cmp_ai:setup({
     -- lua = true
   },
 })
+```
+
+To use with [LlamaCpp](https://github.com/ggerganov/llama.cpp).
+For now it requires you to run [Llama Server](https://github.com/ggerganov/llama.cpp/blob/master/examples/server/README.md) manually with:
+
+```bash
+./server -m ./models/deepseek-coder-6.7b-base.Q4_K_M.gguf -ngl 50 -c 2048 --log-disable
+```
+LlamaCpp requires you to download model in GGUP format. Here is the current model I use:
+ - [DeepSeek Base 6.7b](https://huggingface.co/TheBloke/deepseek-coder-6.7B-base-GGUF/blob/main/deepseek-coder-6.7b-base.Q4_K_M.gguf)
+ It is good to have at least 12GB of VRAM to run it (works best with NVIDIA - due to CUDA acceleration).
+
+```lua
+local cmp_ai = require('cmp_ai.config')
+
+cmp_ai:setup {
+  max_lines = 30,
+  provider = "LlamaCpp",
+  provider_options = {
+    options = {
+      n_predict = 20,  -- number of generated predictions
+      min_p = 0.05, -- default 0.05,  Cut off predictions with probability below  Max_prob * min_p
+      -- repeat_last_n = 64, -- default 64
+      -- repeat_penalty = 1.100, -- default 1.1
+      -- see llama server link above - to see other options
+    },
+    prompt = function(lines_before, lines_after)
+      -- prompt depends on the model you use. Here is an example for deepseek coder
+      return "<s><｜fim▁begin｜>" .. lines_before .. "<｜fim▁hole｜>" .. lines_after .. "<｜fim▁end｜>" -- for deepseek coder
+    end,
+  },
+  debounce_delay = 600, -- ms llama may be GPU hungry, wait x ms after last key input, before sending request to it
+  notify = true,
+  notify_callback = function(msg)
+    vim.notify(msg)
+  end,
+  run_on_every_keystroke = false,
+  ignored_file_types = {
+    -- default is not to ignore
+    -- uncomment to ignore in lua:
+    -- lua = true
+  },
+}
 ```
 
 ### `notify`
