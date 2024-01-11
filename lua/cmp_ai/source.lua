@@ -48,7 +48,7 @@ function Source:_do_complete(ctx, cb)
 end
 
 function Source:trigger(ctx, callback)
-  if vim.fn.mode() == 'i' then -- and cmp.visible() - we want to show pupus even if it is not visible, or is visible
+  if vim.fn.mode() == 'i' then
     self:_do_complete(ctx, callback)
   end
 end
@@ -74,8 +74,8 @@ local bounce_complete, ret_tim =  debounce_trailing(
   conf:get('debounce_delay')
 )
 
-local self_cp, ctx_cp, call_cp
--- on keypress event autocommand -  call tim.timer_again
+local self_cp, ctx_cp, call_cp -- variables to store last completion context
+
 local bounce_autogroup = vim.api.nvim_create_augroup("BounceCompletion", { clear = true })
 vim.api.nvim_create_autocmd({"TextChangedI","InsertEnter","TextChangedP"},{
   pattern = "*",
@@ -99,10 +99,9 @@ vim.api.nvim_create_autocmd({"InsertLeave"},{
 --- complete
 function Source:complete(ctx, callback)
   if conf:get('ignored_file_types')[vim.bo.filetype] then
-    -- callback() -- ? forwhat
+    callback()
     return
   end
-  -- local bufnr = vim.api.nvim_get_current_buf()
   self_cp, ctx_cp, call_cp = self, ctx, callback
   bounce_complete(self_cp, ctx, callback)
 end
