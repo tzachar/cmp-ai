@@ -1,14 +1,14 @@
 local requests = require('cmp_ai.requests')
 
-Ollama = requests:new(nil)
+LlamaCpp = requests:new(nil)
 
-function Ollama:new(o, params)
+function LlamaCpp:new(o, params)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
   self.params = vim.tbl_deep_extend('keep', o or {}, {
-    base_url = 'http://127.0.0.1:11434/api/generate',
-    model = 'codellama:7b-code',
+    base_url = 'http://localhost:8080/completion',
+    -- model = 'codellama:7b-code',
     options = {
       temperature = 0.2,
     },
@@ -16,33 +16,36 @@ function Ollama:new(o, params)
   return o
 end
 
-function Ollama:complete(lines_before, lines_after, cb)
+function LlamaCpp:complete(lines_before, lines_after, cb)
   local data = {
-    model = self.params.model,
+    -- model = self.params.model,
     -- prompt = '<PRE> ' .. lines_before .. ' <SUF>' .. lines_after .. ' <MID>', -- for codellama
     prompt = "<s><｜fim▁begin｜>" .. lines_before .. "<｜fim▁hole｜>" .. lines_after .. "<｜fim▁end｜>", -- for deepseek coder
     stream = false,
-    options = self.params.options,
   }
+  data = vim.tbl_extend('keep', data, self.params.options)
+  data.prompt = self.params.prompt(lines_before, lines_after)
 
   self:Get(self.params.base_url, {}, data, function(answer)
     local new_data = {}
+    -- vim.print('answer', answer)
     if answer.error ~= nil then
-      vim.notify('Ollama error: ' .. answer.error)
+      vim.notify('Llamacp error: ' .. answer.error)
       return
     end
-    if answer.done then
-      local result = answer.response:gsub('<EOT>', '')
+    if answer.stop then
+      local result = answer.content:gsub('<EOT>', '')
+      -- vim.print('results', result)
       table.insert(new_data, result)
     end
     cb(new_data)
   end)
 end
 
-function Ollama:test()
+function LlamaCpp:test()
   self:complete('def factorial(n)\n    if', '    return ans\n', function(data)
     dump(data)
   end)
 end
 
-return Ollama
+return LlamaCpp
