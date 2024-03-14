@@ -2,11 +2,11 @@ local requests = require('cmp_ai.requests')
 
 Ollama = requests:new(nil)
 
-function Ollama:new(o, params)
+function Ollama:new(o)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
-  self.params = vim.tbl_deep_extend('keep', params or {}, {
+  self.params = vim.tbl_deep_extend('keep', o or {}, {
     base_url = 'http://127.0.0.1:11434/api/generate',
     model = 'codellama:7b-code',
     options = {
@@ -20,7 +20,10 @@ end
 function Ollama:complete(lines_before, lines_after, cb)
   local data = {
     model = self.params.model,
-    prompt = '<PRE> ' .. lines_before .. ' <SUF>' .. lines_after .. ' <MID>',
+    prompt = self.params.prompt and self.params.prompt(lines_before, lines_after) or '<PRE> ' .. lines_before .. ' <SUF>' .. lines_after .. ' <MID>',
+    keep_alive = self.params.keep_alive,
+    template = self.params.template,
+    system = self.params.system,
     stream = false,
     options = self.params.options,
   }
