@@ -25,6 +25,8 @@ function Service:json_decode(data)
   end
 end
 
+local lastjob = nil
+
 function Service:Get(url, headers, data, cb)
   headers = headers or {}
   headers[#headers + 1] = 'Content-Type: application/json'
@@ -44,10 +46,30 @@ function Service:Get(url, headers, data, cb)
     args[#args + 1] = h
   end
 
-  job
+  if lastjob ~= nil then
+    lastjob = job
+      :new({
+        command = 'kill',
+        args = { '-9', lastjob.pid }
+    }):start()
+  end
+
+  lastjob = job
     :new({
       command = 'curl',
       args = args,
+      on_stdout = vim.schedule_wrap(function(error, data, self)
+        if error then
+          vim.notify('An Error Occurred ...', vim.log.levels.ERROR)
+          cb({ { error = 'ERROR: API Error' } })
+	end
+        local json = Service:json_decode(data)
+        if json == nil then
+          cb({ { error = 'No Response.' } })
+        else
+          cb(json)
+        end
+      end),
       on_exit = vim.schedule_wrap(function(response, exit_code)
         os.remove(tmpfname)
         if exit_code ~= 0 then
@@ -64,7 +86,7 @@ function Service:Get(url, headers, data, cb)
         end
       end),
     })
-    :start()
+  lastjob:start()
 end
 
 return Service

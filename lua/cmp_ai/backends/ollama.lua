@@ -24,9 +24,12 @@ function Ollama:complete(lines_before, lines_after, cb)
     keep_alive = self.params.keep_alive,
     template = self.params.template,
     system = self.params.system,
-    stream = false,
+    stream = true,
     options = self.params.options,
   }
+  local new_data = {}
+  local cur_string = ""
+  local count = 0;
 
   self:Get(self.params.base_url, {}, data, function(answer)
     local new_data = {}
@@ -34,9 +37,19 @@ function Ollama:complete(lines_before, lines_after, cb)
       vim.notify('Ollama error: ' .. answer.error)
       return
     end
-    if answer.done then
+    if answer.response ~= nil then
       local result = answer.response:gsub('<EOT>', '')
-      table.insert(new_data, result)
+      cur_string = cur_string .. result
+      if count == 10 or answer.done then
+        table.insert(new_data, cur_string)
+        cb(new_data)
+        new_data = {}
+        count = 0
+        if answer.done then
+          cur_string = ""
+        end
+      end
+      count = count + 1
     end
     cb(new_data)
   end)
