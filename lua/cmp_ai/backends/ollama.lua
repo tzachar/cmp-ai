@@ -7,7 +7,7 @@ function Ollama:new(o)
   setmetatable(o, self)
   self.__index = self
   self.params = vim.tbl_deep_extend('keep', o or {}, {
-    base_url = 'http://127.0.0.1:11434/api/generate',
+    base_url = 'localhost:11434/api/generate',
     model = 'codellama:7b-code',
     options = {
       temperature = 0.2,
