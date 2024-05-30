@@ -18,7 +18,8 @@ AI source for hrsh7th/nvim-cmp <https://github.com/hrsh7th/nvim-cmp>
 This is a general purpose AI source for `cmp`, easily adapted to any
 restapisupporting remote code completion.
 
-For now, HuggingFace SantaCoder, OpenAI Chat and Google Bard are implemeted.
+For now, HuggingFace SantaCoder, OpenAI Chat, Codestral and Google Bard are
+implemeted.
 
 
 INSTALL                                                *cmp-ai-cmp-ai-install*
@@ -28,7 +29,7 @@ DEPENDENCIES ~
 
 
 - You will need `plenary.nvim` to use this plugin.
-- For using OpenAI or HuggingFace, you will also need `curl`.
+- For using Codestral, OpenAI or HuggingFace, you will also need `curl`.
 - For using Google Bard, you will need dsdanielpark/Bard-API <https://github.com/dsdanielpark/Bard-API>.
 
 
@@ -110,6 +111,33 @@ You will also need to make sure you have the OpenAI api key in youenvironment,
 `OPENAI_API_KEY`.
 
 Available models for OpenAI are `gpt-4` and `gpt-3.5-turbo`.
+
+To use Codestral:
+
+>lua
+    local cmp_ai = require('cmp_ai.config')
+    
+    cmp_ai:setup({
+      max_lines = 1000,
+      provider = 'Codestral',
+      provider_options = {
+        model = 'codestral-latest',
+      },
+      notify = true,
+      notify_callback = function(msg)
+        vim.notify(msg)
+      end,
+      run_on_every_keystroke = true,
+      ignored_file_types = {
+        -- default is not to ignore
+        -- uncomment to ignore in lua:
+        -- lua = true
+      },
+    })
+<
+
+You will also need to make sure you have the Codestral api key in
+youenvironment, `CODESTRAL_API_KEY`.
 
 To use Google Bard:
 
