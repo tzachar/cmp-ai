@@ -8,7 +8,7 @@ function OpenAI:new(o, params)
   setmetatable(o, self)
   self.__index = self
   self.params = vim.tbl_deep_extend('keep', params or {}, {
-    model = 'gpt-3.5-turbo',
+    model = 'gpt-4-turbo',
     temperature = 0.1,
     n = 1,
   })
