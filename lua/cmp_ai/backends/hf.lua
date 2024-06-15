@@ -47,7 +47,7 @@ function HF:complete(lines_before, lines_after, cb)
       return
     end
     for _, response in ipairs(answer) do
-      if response.generated_text == nil then
+      if response.generated_text ~= nil then
         local result = response.generated_text:gsub('<|endoftext|>', '')
         table.insert(new_data, result)
       end
