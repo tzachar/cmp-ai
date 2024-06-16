@@ -35,6 +35,7 @@ function Service:Get(url, headers, data, cb)
     vim.notify('Cannot open temporary message file: ' .. tmpfname, vim.log.levels.ERROR)
     return
   end
+  -- vim.print("Request Data: ", vim.fn.json_encode(data))
   f:write(vim.fn.json_encode(data))
   f:close()
 
@@ -57,6 +58,7 @@ function Service:Get(url, headers, data, cb)
 
         local result = table.concat(response:result(), '\n')
         local json = self:json_decode(result)
+        -- vim.print("Response: ", json )
         if json == nil then
           cb({ { error = 'No Response.' } })
         else
