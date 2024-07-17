@@ -61,6 +61,10 @@ function Source:end_complete(data, ctx, cb)
     local prefix = string.sub(ctx.context.cursor_before_line, ctx.offset)
     local result = prefix .. response
     table.insert(items, {
+      cmp = {
+        kind_hl_group = 'CmpItemKind' .. conf:get('provider').name,
+        kind_text = conf:get('provider').name,
+      },
       label = result,
       documentation = {
         kind = cmp.lsp.MarkupKind.Markdown,
