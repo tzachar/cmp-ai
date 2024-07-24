@@ -169,6 +169,36 @@ cmp_ai:setup({
 })
 ```
 
+To use Tabby:
+
+```lua
+local cmp_ai = require('cmp_ai.config')
+
+cmp_ai:setup({
+  max_lines = 1000,
+  provider = 'Tabby',
+  notify = true,
+  provider_options = {
+    -- These are optional
+    -- user = 'yourusername',
+    -- temperature = 0.2,
+    -- seed = 'randomstring',
+  },
+  notify_callback = function(msg)
+    vim.notify(msg)
+  end,
+  run_on_every_keystroke = true,
+  ignored_file_types = {
+    -- default is not to ignore
+    -- uncomment to ignore in lua:
+    -- lua = true
+  },
+})
+```
+
+You will also need to make sure you have the Tabby api key in your environment, `TABBY_API_KEY`.
+
+
 ### `notify`
 
 As some completion sources can be quit slow, setting this to `true` will trigger
