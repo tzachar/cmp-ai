@@ -197,13 +197,13 @@ To use Tabby:
     cmp_ai:setup({
       max_lines = 1000,
       provider = 'Tabby',
-      provider_options = {
-	-- These are optional
-	-- user = 'yourusername',
-	-- temperature = 0.2,
-	-- seed = 'randomstring',
-      },
       notify = true,
+      provider_options = {
+        -- These are optional
+        -- user = 'yourusername',
+        -- temperature = 0.2,
+        -- seed = 'randomstring',
+      },
       notify_callback = function(msg)
         vim.notify(msg)
       end,
@@ -216,9 +216,8 @@ To use Tabby:
     })
 <
 
-
-You will also need to make sure you have the Tabby api key in
-your environment, `TABBY_API_KEY`.
+You will also need to make sure you have the Tabby api key in your environment,
+`TABBY_API_KEY`.
 
 
 NOTIFY ~
