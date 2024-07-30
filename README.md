@@ -170,7 +170,7 @@ cmp_ai:setup({
 })
 ```
 
-With Ollama you can also use the `suffix` parameter, typically when you want to use cmd-ai for codecompletion.  
+With Ollama you can also use the `suffix` parameter, typically when you want to use cmp-ai for codecompletion.  
 
 ```lua
 local cmp_ai = require('cmp_ai.config')
