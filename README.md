@@ -1,5 +1,6 @@
 # cmp-ai
 
+
 AI source for [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
 
 This is a general purpose AI source for `cmp`, easily adapted to any restapi
@@ -166,6 +167,31 @@ cmp_ai:setup({
     -- uncomment to ignore in lua:
     -- lua = true
   },
+})
+```
+
+With Ollama you can also use the `suffix` parameter, typically when you want to use cmd-ai for codecompletion.  
+
+```lua
+local cmp_ai = require('cmp_ai.config')
+
+cmp_ai:setup({
+  max_lines = 100,
+  provider = 'Ollama',
+  provider_options = {
+    model = 'codellama:7b-code',
+    prompt = function(lines_before, lines_after)
+        return lines_before
+    end,
+    suffix = function(lines_after)
+      return lines_after
+    end,
+  },
+  notify = true,
+  notify_callback = function(msg)
+    vim.notify(msg)
+  end,
+  run_on_every_keystroke = true,
 })
 ```
 
