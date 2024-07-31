@@ -170,7 +170,17 @@ cmp_ai:setup({
 })
 ```
 
-With Ollama you can also use the `suffix` parameter, typically when you want to use cmp-ai for codecompletion.  
+With Ollama you can also use the `suffix` parameter, typically when you want to use cmp-ai for codecompletion and you want to use the default plugin/prompt.  
+
+If the model you're using has the following template:
+```
+{{- if .Suffix }}<|fim_prefix|>{{ .Prompt }}<|fim_suffix|>{{ .Suffix }}<|fim_middle|>
+{{- else }}{{ .Prompt }}
+{{- end }}
+```
+then you can use the suffix parameter to not change the prompt. since the model will use your suffix and the prompt to construct the template.
+The prompts should be the `lines_before` and suffix the `lines_after`
+Now you can even change the model without the need to adjust the prompt or suffix functions.
 
 ```lua
 local cmp_ai = require('cmp_ai.config')
@@ -179,7 +189,7 @@ cmp_ai:setup({
   max_lines = 100,
   provider = 'Ollama',
   provider_options = {
-    model = 'codellama:7b-code',
+    model = 'codegemma:2b-code',
     prompt = function(lines_before, lines_after)
         return lines_before
     end,
