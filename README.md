@@ -1,5 +1,6 @@
 # cmp-ai
 
+
 AI source for [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
 
 This is a general purpose AI source for `cmp`, easily adapted to any restapi
@@ -166,6 +167,41 @@ cmp_ai:setup({
     -- uncomment to ignore in lua:
     -- lua = true
   },
+})
+```
+
+With Ollama you can also use the `suffix` parameter, typically when you want to use cmp-ai for codecompletion and you want to use the default plugin/prompt.  
+
+If the model you're using has the following template:
+```
+{{- if .Suffix }}<|fim_prefix|>{{ .Prompt }}<|fim_suffix|>{{ .Suffix }}<|fim_middle|>
+{{- else }}{{ .Prompt }}
+{{- end }}
+```
+then you can use the suffix parameter to not change the prompt. since the model will use your suffix and the prompt to construct the template.
+The prompts should be the `lines_before` and suffix the `lines_after`
+Now you can even change the model without the need to adjust the prompt or suffix functions.
+
+```lua
+local cmp_ai = require('cmp_ai.config')
+
+cmp_ai:setup({
+  max_lines = 100,
+  provider = 'Ollama',
+  provider_options = {
+    model = 'codegemma:2b-code',
+    prompt = function(lines_before, lines_after)
+        return lines_before
+    end,
+    suffix = function(lines_after)
+      return lines_after
+    end,
+  },
+  notify = true,
+  notify_callback = function(msg)
+    vim.notify(msg)
+  end,
+  run_on_every_keystroke = true,
 })
 ```
 

@@ -25,6 +25,7 @@ function Ollama:complete(lines_before, lines_after, cb)
     template = self.params.template,
     system = self.params.system,
     stream = false,
+    suffix = self.params.suffix and self.params.suffix(lines_after),
     options = self.params.options,
   }
 
