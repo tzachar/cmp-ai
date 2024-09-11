@@ -258,32 +258,6 @@ To use Tabby:
 You will also need to make sure you have the Tabby api key in your environment,
 `TABBY_API_KEY`.
 
-To use Claude:
-
->lua
-    local cmp_ai = require('cmp_ai.config')
-    
-    cmp_ai:setup({
-      max_lines = 1000,
-      provider = 'Claude',
-      provider_options = {
-        model = 'claude-3-5-sonnet-20240620',
-      },
-      notify = true,
-      notify_callback = function(msg)
-        vim.notify(msg)
-      end,
-      run_on_every_keystroke = true,
-      ignored_file_types = {
-        -- default is not to ignore
-        -- uncomment to ignore in lua:
-        -- lua = true
-      },
-    })
-<
-
-You will also need to make sure you have the Anthropic api key in your environment,
-`CLAUDE_API_KEY`.
 
 NOTIFY ~
 
