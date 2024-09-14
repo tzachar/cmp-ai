@@ -26,7 +26,7 @@ function Service:json_decode(data)
 end
 
 function Service:Get(url, headers, data, cb)
-  headers = headers or {}
+  headers = vim.tbl_extend("force", {}, headers or {})
   headers[#headers + 1] = 'Content-Type: application/json'
 
   local tmpfname = os.tmpname()
