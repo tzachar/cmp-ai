@@ -121,6 +121,31 @@ cmp_ai:setup({
 You will also need to make sure you have the Codestral api key in you
 environment, `CODESTRAL_API_KEY`.
 
+You can also use the `suffix` and `prompt` parameters, see [Codestral](https://github.com/codestral/codestral) for more details. 
+
+```lua
+local cmp_ai = require('cmp_ai.config')
+
+cmp_ai:setup({
+  max_lines = 1000,
+  provider = 'Codestral',
+  provider_options = {
+    model = 'codestral-latest',
+    prompt = function(lines_before, lines_after)
+      return lines_before
+    end,
+    suffix = function(lines_after)
+      return lines_after
+    end
+  },
+  notify = true,
+  notify_callback = function(msg)
+    vim.notify(msg)
+  end,
+  run_on_every_keystroke = true,
+})
+```
+
 To use Google Bard:
 
 ```lua
@@ -170,7 +195,7 @@ cmp_ai:setup({
 })
 ```
 
-With Ollama you can also use the `suffix` parameter, typically when you want to use cmp-ai for codecompletion and you want to use the default plugin/prompt.  
+With Ollama you can also use the `suffix` parameter, typically when you want to use cmp-ai for code completion and you want to use the default plugin/prompt.  
 
 If the model you're using has the following template:
 ```
@@ -191,7 +216,7 @@ cmp_ai:setup({
   provider_options = {
     model = 'codegemma:2b-code',
     prompt = function(lines_before, lines_after)
-        return lines_before
+      return lines_before
     end,
     suffix = function(lines_after)
       return lines_after
