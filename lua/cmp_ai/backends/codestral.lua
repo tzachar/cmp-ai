@@ -3,11 +3,11 @@ local requests = require('cmp_ai.requests')
 Codestral = requests:new(nil)
 BASE_URL = 'https://codestral.mistral.ai/v1/fim/completions'
 
-function Codestral:new(o, params)
+function Codestral:new(o)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
-  self.params = vim.tbl_deep_extend('keep', params or {}, {
+  self.params = vim.tbl_deep_extend('keep', o or {}, {
     model = 'codestral-latest',
     temperature = 0.1,
     n = 1,
@@ -35,8 +35,10 @@ function Codestral:complete(lines_before, lines_after, cb)
     return
   end
   local data = {
-    prompt = lines_before,
+    prompt = self.params.prompt and self.params.prompt(lines_before, lines_after) or lines_before,
+    suffix = self.params.suffix and self.params.suffix(lines_after) or '',
   }
+
   data = vim.tbl_deep_extend('keep', data, self.params)
   self:Get(BASE_URL, self.headers, data, function(answer)
     local new_data = {}
