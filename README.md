@@ -6,7 +6,7 @@ AI source for [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
 This is a general purpose AI source for `cmp`, easily adapted to any restapi
 supporting remote code completion.
 
-For now, HuggingFace SantaCoder, OpenAI Chat, Codestral and Google Bard are implemeted.
+For now, HuggingFace, SantaCoder, OpenAI Chat, Codestral, Ollama and Google Bard are implemented.
 
 ## Install
 
