@@ -37,11 +37,11 @@ function DocileLlamaCpp:complete(lines_before, lines_after, cb)
     if answer.stop then
       local result = answer.content:gsub('<EOT>', '')
 
-      -- detect if 'CodeQwen' string in answer.generation_settings.model
-      if string.find(answer.generation_settings.model, 'CodeQwen') then
-        -- also get rid first letter - which is always the same space - but only for CodeQwen....
-        result = result:gsub('^.', '')
-      end
+      -- detect if 'CodeQwen' string in answer.generation_settings.model -- no longer there in llamap...
+      -- if string.find(answer.generation_settings.model, 'CodeQwen') then
+      --   -- also get rid first letter - which is always the same space - but only for CodeQwen....
+      --   result = result:gsub('^.', '')
+      -- end
       -- vim.print('results', result)
       table.insert(new_data, result)
     end
