@@ -57,6 +57,7 @@ function Service:Get(url, headers, data, cb)
 
         local result = table.concat(response:result(), '\n')
         local json = self:json_decode(result)
+        self:save_response(json)
         if json == nil then
           cb({ { error = 'No Response.' } })
         else
@@ -67,4 +68,9 @@ function Service:Get(url, headers, data, cb)
     :start()
 end
 
+function Service:save_response(response)
+  vim.schedule(function()
+    require('cmp_ai').raw_response = response
+  end)
+end
 return Service
