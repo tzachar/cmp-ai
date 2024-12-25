@@ -406,3 +406,23 @@ cmp.setup({
   },
 })
 ```
+
+## Debugging Information
+
+To retrieve the raw response from the backend, you can set the following option
+in `provider_options`: 
+```lua
+provider_options = {
+  raw_response_cb = function(response)
+    -- the `response` parameter contains the raw response (JSON-like) object.
+
+    vim.notify(vim.inspect(response)) -- show the response as a lua table
+
+    vim.g.ai_raw_response = response -- store the raw response in a global
+                                     -- variable so that you can use it
+                                     -- somewhere else (like statusline).
+  end,
+}
+```
+This provides useful information like context lengths (# of tokens) and 
+generation speeds (tokens per seconds), depending on your backend. 
