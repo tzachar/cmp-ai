@@ -57,8 +57,8 @@ function Service:Get(url, headers, data, cb)
 
         local result = table.concat(response:result(), '\n')
         local json = self:json_decode(result)
-        if type(self.raw_response_cb) == 'function' then
-          self.raw_response_cb(json)
+        if type(self.params.raw_response_cb) == 'function' then
+          self.params.raw_response_cb(json)
         end
         if json == nil then
           cb({ { error = 'No Response.' } })
