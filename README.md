@@ -181,7 +181,7 @@ cmp_ai:setup({
   provider = 'Ollama',
   provider_options = {
     model = 'codellama:7b-code',
-    auto_unload = true, -- Set to true to automatically unload the model when
+    auto_unload = false, -- Set to true to automatically unload the model when
                         -- exiting nvim.
   },
   notify = true,
