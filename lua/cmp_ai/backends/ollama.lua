@@ -13,7 +13,14 @@ function Ollama:new(o)
       temperature = 0.2,
     },
   })
-
+  if self.params.auto_unload then
+    vim.api.nvim_create_autocmd('VimLeave', {
+      callback = function()
+        self:Get(self.params.base_url, {}, { model = self.params.model, keep_alive = 0 }, function() end)
+      end,
+      group = vim.api.nvim_create_augroup('CmpAIOllama', { clear = true }),
+    })
+  end
   return o
 end
 
