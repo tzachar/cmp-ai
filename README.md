@@ -360,6 +360,19 @@ cmp_ai:setup({
 
 How many lines of buffer context to use
 
+### `max_timeout_seconds`
+
+Number of seconds before a code completion request is cancelled. Bard is
+currently not supported. This is `--max-time` for `curl`.
+
+example:
+
+```lua
+cmp_ai:setup({
+  max_timeout_seconds = 8,
+})
+```
+
 ### `run_on_every_keystroke`
 
 Generate new completion items on every keystroke.

@@ -1,5 +1,6 @@
 local job = require('plenary.job')
-Service = { current_job = nil }
+local conf = require('cmp_ai.config')
+Service = {}
 
 function Service:new(o)
   o = o or {}
@@ -39,16 +40,21 @@ function Service:Get(url, headers, data, cb)
   f:close()
 
   local args = { url, '-d', '@' .. tmpfname }
+
+  local timeout_seconds = conf:get('max_timeout_seconds')
+  if tonumber(timeout_seconds) ~= nil then
+    args[#args + 1] = "--max-time"
+    args[#args + 1] = tonumber(timeout_seconds)
+  elseif timeout_seconds ~= nil then
+    vim.notify("cmp-ai: your max_timeout_seconds config is not a number", vim.log.levels.WARN)
+  end
+
   for _, h in ipairs(headers) do
     args[#args + 1] = '-H'
-    args[#args + 1] = h
+    args[#args + 1] = "'" .. h .. "'"
   end
 
-  if not self.current_job == nil then
-    self.current_job._stop()
-  end
-
-  self.current_job = job
+  job
     :new({
       command = 'curl',
       args = args,
@@ -73,8 +79,7 @@ function Service:Get(url, headers, data, cb)
         end
       end),
     })
-
-  self.current_job:start()
+    :start()
 end
 
 return Service
