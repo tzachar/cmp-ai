@@ -1,5 +1,5 @@
 local job = require('plenary.job')
-Service = {}
+Service = { current_job = nil }
 
 function Service:new(o)
   o = o or {}
@@ -11,7 +11,7 @@ end
 function Service:complete(
   lines_before, ---@diagnostic disable-line
   lines_after, ---@diagnostic disable-line
-  cb
+  _
 ) ---@diagnostic disable-line
   error('Not Implemented!')
 end
@@ -44,14 +44,20 @@ function Service:Get(url, headers, data, cb)
     args[#args + 1] = h
   end
 
-  job
+  if not self.current_job == nil then
+    self.current_job._stop()
+  end
+
+  self.current_job = job
     :new({
       command = 'curl',
       args = args,
       on_exit = vim.schedule_wrap(function(response, exit_code)
         os.remove(tmpfname)
         if exit_code ~= 0 then
-          vim.notify('An Error Occurred ...', vim.log.levels.ERROR)
+          if conf:get('log_errors') then
+            vim.notify('An Error Occurred ...', vim.log.levels.ERROR)
+          end
           cb({ { error = 'ERROR: API Error' } })
         end
 
@@ -67,7 +73,8 @@ function Service:Get(url, headers, data, cb)
         end
       end),
     })
-    :start()
+
+  self.current_job:start()
 end
 
 return Service

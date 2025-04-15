@@ -14,6 +14,8 @@ local conf = {
     -- uncomment to ignore in lua:
     -- lua = true
   },
+
+  log_errors = true,
 }
 
 function M:setup(params)

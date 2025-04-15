@@ -342,6 +342,19 @@ notify_callback = {
 }
 ```
 
+### log_errors
+
+Log any errors that the AI backend returns. Defaults to `true`. This does not
+prevent the notification callbacks from being called; you can set this to
+`false` to prevent excess noise if you perform other `vim.notify` calls in
+your callbacks.
+
+```lua
+cmp_ai:setup({
+    log_errors = true,
+})
+```
+
 
 ### `max_lines`
 
