@@ -310,6 +310,39 @@ notify_callback = function(msg)
 end
 ```
 
+If you want, you can also configure callbacks for `on_start` and `on_end` events
+
+```lua
+notify_callback = {
+    on_start = function(msg)
+        require('notify').notify(
+            msg .. "completion started",
+            vim.log.levels.INFO,
+            {
+                title = 'OpenAI',
+                render = 'compact',
+            }
+        )
+
+        -- do pretty animations or something here
+    end,
+
+    on_end = function(msg)
+        require('notify').notify(
+            msg .. "completion ended",
+            vim.log.levels.INFO,
+            {
+                title = 'OpenAI',
+                render = 'compact',
+            }
+        )
+
+        -- finish pretty animations started above
+    end,
+}
+```
+
+
 ### `max_lines`
 
 How many lines of buffer context to use

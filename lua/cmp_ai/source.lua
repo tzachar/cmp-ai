@@ -1,6 +1,7 @@
 local cmp = require('cmp')
 local api = vim.api
 local conf = require('cmp_ai.config')
+local async = require('plenary.async')
 
 local Source = {}
 function Source:new(o)
@@ -16,7 +17,16 @@ end
 
 function Source:_do_complete(ctx, cb)
   if conf:get('notify') then
-    conf:get('notify_callback')('Completion started')
+    local cb = conf:get('notify_callback')
+    if type(cb) == "table" then
+      if cb["on_start"] == nil then
+        return
+      else
+        async.run(function() cb["on_start"]('Completion started') end)
+      end
+    else
+      async.run(function() cb('Completion started', true) end)
+    end
   end
   local max_lines = conf:get('max_lines')
   local cursor = ctx.context.cursor
@@ -41,7 +51,16 @@ function Source:_do_complete(ctx, cb)
   service:complete(before, after, function(data)
     self:end_complete(data, ctx, cb)
     if conf:get('notify') then
-      conf:get('notify_callback')('Completion started')
+      local cb = conf:get('notify_callback')
+      if type(cb) == "table" then
+        if cb["on_end"] == nil then
+          return
+        else
+          async.run(function() cb["on_end"]('Completion ended') end)
+        end
+      else
+        async.run(function() cb('Completion ended', false) end)
+      end
     end
   end)
 end
