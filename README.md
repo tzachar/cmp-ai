@@ -342,10 +342,36 @@ notify_callback = {
 }
 ```
 
+### log_errors
+
+Log any errors that the AI backend returns. Defaults to `true`. This does not
+prevent the notification callbacks from being called; you can set this to
+`false` to prevent excess noise if you perform other `vim.notify` calls in
+your callbacks.
+
+```lua
+cmp_ai:setup({
+    log_errors = true,
+})
+```
+
 
 ### `max_lines`
 
 How many lines of buffer context to use
+
+### `max_timeout_seconds`
+
+Number of seconds before a code completion request is cancelled. Bard is
+currently not supported. This is `--max-time` for `curl`.
+
+example:
+
+```lua
+cmp_ai:setup({
+  max_timeout_seconds = 8,
+})
+```
 
 ### `run_on_every_keystroke`
 

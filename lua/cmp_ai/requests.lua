@@ -1,4 +1,5 @@
 local job = require('plenary.job')
+local conf = require('cmp_ai.config')
 Service = {}
 
 function Service:new(o)
@@ -11,7 +12,7 @@ end
 function Service:complete(
   lines_before, ---@diagnostic disable-line
   lines_after, ---@diagnostic disable-line
-  cb
+  _
 ) ---@diagnostic disable-line
   error('Not Implemented!')
 end
@@ -39,9 +40,18 @@ function Service:Get(url, headers, data, cb)
   f:close()
 
   local args = { url, '-d', '@' .. tmpfname }
+
+  local timeout_seconds = conf:get('max_timeout_seconds')
+  if tonumber(timeout_seconds) ~= nil then
+    args[#args + 1] = "--max-time"
+    args[#args + 1] = tonumber(timeout_seconds)
+  elseif timeout_seconds ~= nil then
+    vim.notify("cmp-ai: your max_timeout_seconds config is not a number", vim.log.levels.WARN)
+  end
+
   for _, h in ipairs(headers) do
     args[#args + 1] = '-H'
-    args[#args + 1] = h
+    args[#args + 1] = "'" .. h .. "'"
   end
 
   job
@@ -51,7 +61,9 @@ function Service:Get(url, headers, data, cb)
       on_exit = vim.schedule_wrap(function(response, exit_code)
         os.remove(tmpfname)
         if exit_code ~= 0 then
-          vim.notify('An Error Occurred ...', vim.log.levels.ERROR)
+          if conf:get('log_errors') then
+            vim.notify('An Error Occurred ...', vim.log.levels.ERROR)
+          end
           cb({ { error = 'ERROR: API Error' } })
         end
 
