@@ -18,14 +18,18 @@ end
 function Source:_do_complete(ctx, cb)
   if conf:get('notify') then
     local cb = conf:get('notify_callback')
-    if type(cb) == "table" then
-      if cb["on_start"] == nil then
+    if type(cb) == 'table' then
+      if cb['on_start'] == nil then
         return
       else
-        async.run(function() cb["on_start"]('Completion started') end)
+        async.run(function()
+          cb['on_start']('Completion started')
+        end)
       end
     else
-      async.run(function() cb('Completion started', true) end)
+      async.run(function()
+        cb('Completion started', true)
+      end)
     end
   end
   local max_lines = conf:get('max_lines')
@@ -52,14 +56,18 @@ function Source:_do_complete(ctx, cb)
     self:end_complete(data, ctx, cb)
     if conf:get('notify') then
       local cb = conf:get('notify_callback')
-      if type(cb) == "table" then
-        if cb["on_end"] == nil then
+      if type(cb) == 'table' then
+        if cb['on_end'] == nil then
           return
         else
-          async.run(function() cb["on_end"]('Completion ended') end)
+          async.run(function()
+            cb['on_end']('Completion ended')
+          end)
         end
       else
-        async.run(function() cb('Completion ended', false) end)
+        async.run(function()
+          cb('Completion ended', false)
+        end)
       end
     end
   end)

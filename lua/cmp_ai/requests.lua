@@ -43,10 +43,10 @@ function Service:Get(url, headers, data, cb)
 
   local timeout_seconds = conf:get('max_timeout_seconds')
   if tonumber(timeout_seconds) ~= nil then
-    args[#args + 1] = "--max-time"
+    args[#args + 1] = '--max-time'
     args[#args + 1] = tonumber(timeout_seconds)
   elseif timeout_seconds ~= nil then
-    vim.notify("cmp-ai: your max_timeout_seconds config is not a number", vim.log.levels.WARN)
+    vim.notify('cmp-ai: your max_timeout_seconds config is not a number', vim.log.levels.WARN)
   end
 
   for _, h in ipairs(headers) do

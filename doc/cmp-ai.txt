@@ -349,44 +349,63 @@ configured.For example:
     end
 <
 
-If you want, you can also configure callbacks for `on_start` and `on_end` events
+If you want, you can also configure callbacks for `on_start` and `on_end`
+events
 
 >lua
     notify_callback = {
-	on_start = function(msg)
-	    require('notify').notify(
-		msg .. "completion started",
-		vim.log.levels.INFO,
-		{
-		    title = 'OpenAI',
-		    render = 'compact',
-		}
-	    )
-	    -- do pretty animations or something here
-	end,
-
-	on_end = function(msg)
-	    require('notify').notify(
-		msg .. "completion ended",
-		vim.log.levels.INFO,
-		{
-		    title = 'OpenAI',
-		    render = 'compact',
-		}
-	    )
-	    -- finish pretty animations started above
-	end,
+        on_start = function(msg)
+            require('notify').notify(
+                msg .. "completion started",
+                vim.log.levels.INFO,
+                {
+                    title = 'OpenAI',
+                    render = 'compact',
+                }
+            )
+    
+            -- do pretty animations or something here
+        end,
+    
+        on_end = function(msg)
+            require('notify').notify(
+                msg .. "completion ended",
+                vim.log.levels.INFO,
+                {
+                    title = 'OpenAI',
+                    render = 'compact',
+                }
+            )
+    
+            -- finish pretty animations started above
+        end,
     }
+<
+
+
+LOG_ERRORS ~
+
+Log any errors that the AI backend returns. Defaults to `true`. This does
+notprevent the notification callbacks from being called; you can set this
+to`false` to prevent excess noise if you perform other `vim.notify` calls
+inyour callbacks.
+
+>lua
+    cmp_ai:setup({
+        log_errors = true,
+    })
+<
 
 
 MAX_LINES ~
 
 How many lines of buffer context to use
 
-MAX_TIMEOUT_SECONDS
 
-Number of seconds before a code completion request is cancelled. Bard is
-currently not supported. This is `--max-time` for `curl`.
+MAX_TIMEOUT_SECONDS ~
+
+Number of seconds before a code completion request is cancelled. Bard
+iscurrently not supported. This is `--max-time` for `curl`.
 
 example:
 
@@ -394,19 +413,8 @@ example:
     cmp_ai:setup({
       max_timeout_seconds = 8,
     })
+<
 
-
-LOG_ERRORS
-
-Log any errors that the AI backend returns. Defaults to `true`. This does not
-prevent the notification callbacks from being called; you can set this to
-`false` to prevent excess noise if you perform other `vim.notify` calls in
-your callbacks.
-
->lua
-    cmp_ai:setup({
-      log_errors = true,
-    })
 
 RUN_ON_EVERY_KEYSTROKE ~
 
@@ -507,6 +515,7 @@ You can bump `cmp-ai` completions to the top of your completion menu like so:
       },
     })
 <
+
 
 DEBUGGING INFORMATION                    *cmp-ai-cmp-ai-debugging-information*
 
