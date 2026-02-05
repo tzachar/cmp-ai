@@ -65,6 +65,7 @@ function Service:Get(url, headers, data, cb)
             vim.notify('An Error Occurred (exit code: ' .. exit_code .. ')', vim.log.levels.ERROR)
           end
           cb({ { error = 'ERROR: API Error' } })
+          return
         end
 
         local result = table.concat(response:result(), '\n')
