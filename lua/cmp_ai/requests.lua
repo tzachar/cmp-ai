@@ -51,7 +51,7 @@ function Service:Get(url, headers, data, cb)
 
   for _, h in ipairs(headers) do
     args[#args + 1] = '-H'
-    args[#args + 1] = "'" .. h .. "'"
+    args[#args + 1] = h
   end
 
   job
