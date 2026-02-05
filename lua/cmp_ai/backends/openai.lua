@@ -59,8 +59,16 @@ Your answer should be:
       },
     },
   }
-  data = vim.tbl_deep_extend('keep', data, self.params)
-  self:Get(BASE_URL, self.headers, data, function(answer)
+
+  local api_params = {}
+  for k, v in pairs(self.params) do
+    if k ~= 'url' and k ~= 'api_key' then
+      api_params[k] = v
+    end
+  end
+
+  data = vim.tbl_deep_extend('keep', data, api_params)
+  self:Get(self.params.url, self.headers, data, function(answer)
     local new_data = {}
     if answer.choices then
       for _, response in ipairs(answer.choices) do
