@@ -62,7 +62,7 @@ function Service:Get(url, headers, data, cb)
         os.remove(tmpfname)
         if exit_code ~= 0 then
           if conf:get('log_errors') then
-            vim.notify('An Error Occurred ...', vim.log.levels.ERROR)
+            vim.notify('An Error Occurred (exit code: ' .. exit_code .. ')', vim.log.levels.ERROR)
           end
           cb({ { error = 'ERROR: API Error' } })
         end
