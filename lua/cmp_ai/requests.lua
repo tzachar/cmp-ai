@@ -51,7 +51,7 @@ function Service:Get(url, headers, data, cb)
 
   for _, h in ipairs(headers) do
     args[#args + 1] = '-H'
-    args[#args + 1] = "'" .. h .. "'"
+    args[#args + 1] = h
   end
 
   job
@@ -62,9 +62,10 @@ function Service:Get(url, headers, data, cb)
         os.remove(tmpfname)
         if exit_code ~= 0 then
           if conf:get('log_errors') then
-            vim.notify('An Error Occurred ...', vim.log.levels.ERROR)
+            vim.notify('An Error Occurred (exit code: ' .. exit_code .. ')', vim.log.levels.ERROR)
           end
           cb({ { error = 'ERROR: API Error' } })
+          return
         end
 
         local result = table.concat(response:result(), '\n')
