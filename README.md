@@ -6,7 +6,7 @@ AI source for [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
 This is a general purpose AI source for `cmp`, easily adapted to any restapi
 supporting remote code completion.
 
-For now, HuggingFace, SantaCoder, OpenAI Chat, Codestral, Ollama and Google Bard are implemented.
+For now, HuggingFace, SantaCoder, OpenAI Chat, Codestral, Ollama, Google Bard and LlamaCpp are implemented.
 
 ## Install
 
@@ -290,6 +290,34 @@ cmp_ai:setup({
 
 You will also need to make sure you have the Tabby api key in your environment, `TABBY_API_KEY`.
 
+To use LlamaCpp:
+
+```lua
+local cmp_ai = require('cmp_ai.config')
+
+cmp_ai:setup({
+  max_lines = 1000,
+  provider = 'LlamaCpp',
+  notify = true,
+  provider_options = {
+    base_url = 'http://127.0.0.1:8080',
+    model = 'your-model-name',
+    temperature = 0.2,
+    max_tokens = 100,
+  },
+  notify_callback = function(msg)
+    vim.notify(msg)
+  end,
+  run_on_every_keystroke = true,
+  ignored_file_types = {
+    -- default is not to ignore
+    -- uncomment to ignore in lua:
+    -- lua = true
+  },
+})
+```
+
+Optionally, you can set the `LLAMA_CPP_API_KEY` environment variable for API authentication.
 
 ### `notify`
 
@@ -438,6 +466,7 @@ require('cmp').setup({
         OpenAI = "",
         Codestral = "",
         Bard = "",
+        LlamaCpp = "",
       }
     });
   },
