@@ -31,7 +31,7 @@ function LlamaCpp:complete(lines_before, lines_after, cb)
     model = self.params.model,
   }
 
-  local url = self.params.base_url .. "/infill"
+  local url = self.params.base_url .. '/infill'
   self:Get(url, headers, data, function(answer)
     local new_data = {}
     if answer.error ~= nil then
